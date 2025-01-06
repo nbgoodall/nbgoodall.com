@@ -46,11 +46,60 @@
       you can invite people through WhatsApp, email, Signal, or Telegram.
     </p>
 
+    <h2>Updates</h2>
+
+    <p>Subscribe to receive updates about things I'm working on.</p>
+
+    <form
+      id="updates-form"
+      action="https://blog.nbgoodall.com/members/api/send-magic-link"
+      method="POST"
+    >
+      <input id="email" type="email" name="email" placeholder="you@email.com" />
+      <button type="submit">Subscribe</button>
+
+      <p><small id="subscription-message"></small></p>
+    </form>
+
     <h2>Links</h2>
+
     <ul>
       <li><a href="/now">Now</a></li>
       <li><a href="https://github.com/nbgoodall" target="_blank">GitHub</a></li>
       <li><a href="https://x.com/nbgoodall" target="_blank">X</a></li>
     </ul>
+
+    <script>
+      const form = document.getElementById("updates-form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = form.querySelector("#email").value;
+        const message = document.getElementById("subscription-message");
+
+        const UPDATES_NEWSLETTER_ID = "677653c67445d67728f901ac";
+
+        try {
+          const response = await fetch(e.target.action, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              newsletters: [{ id: UPDATES_NEWSLETTER_ID }],
+            }),
+          });
+
+          if (!response.ok)
+            throw new Error("Failed to subscribe. Please try again.");
+
+          message.textContent = "Check your inbox for the confirmation link!";
+          form.reset();
+        } catch (err) {
+          message.textContent = err.message;
+        }
+      });
+    </script>
   </body>
 </html>
